@@ -1,5 +1,7 @@
-{ config, pkgs, ... }:
-
+{ config, pkgs, lib, ... }:
+let
+  mkI3Keybindings = input: lib.mkOptionDefault (input config.xsession.windowManager.i3.config.modifier);
+in
 {
   nixpkgs.config.allowUnfree = true;
 
@@ -36,6 +38,36 @@
   xresources.properties = {
     "xterm*Background" = "black";
     "xterm*Foreground" = "grey";
+  };
+
+  xsession.windowManager.i3 = {
+    enable = true;
+    config = {
+      focus.followMouse = false;
+      modifier = "Mod4";
+      fonts.size = 10.0;
+      keybindings = mkI3Keybindings (mod: {
+        XF86AudioRaiseVolume = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status";
+        XF86AudioLowerVolume = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status";
+        XF86AudioMute = "exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status";
+        "${mod}+h" = "focus left";
+        "${mod}+j" = "focus down";
+        "${mod}+k" = "focus up";
+        "${mod}+l" = "focus right";
+        "${mod}+Shift+h" = "move left";
+        "${mod}+Shift+j" = "move down";
+        "${mod}+Shift+k" = "move up";
+        "${mod}+Shift+l" = "move right";
+        "${mod}+Shift+v" = "split h";
+      });
+      modes.resize = mkI3Keybindings (mod: {
+        "${mod}+h" = "resize shrink width 10 px or 10 ppt";
+        "${mod}+j" = "resize grow height 10 px or 10 ppt";
+        "${mod}+k" = "resize shrink height 10 px or 10 ppt";
+        "${mod}+l" = "resize grow width 10 px or 10 ppt";
+      });
+    };
+
   };
 
   programs.bash = {
