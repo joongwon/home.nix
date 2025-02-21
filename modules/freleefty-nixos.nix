@@ -3,11 +3,11 @@ let
   mkI3Keybindings = input: lib.mkOptionDefault (input config.xsession.windowManager.i3.config.modifier);
 in
 {
-  nixpkgs.config.allowUnfree = true;
+  imports = [ ./common.nix ];
 
+  home.stateVersion = "24.11";
   home.username = "joongwon";
   home.homeDirectory = "/home/joongwon";
-  home.stateVersion = "24.11";
   home.packages = with pkgs; [
     coq
     imagemagick
@@ -23,11 +23,6 @@ in
       executable = false;
     };
   };
-
-  home.sessionVariables = {
-  };
-
-  programs.home-manager.enable = true;
 
   home.keyboard = null;
 
@@ -68,55 +63,6 @@ in
       });
     };
 
-  };
-
-  programs.bash = {
-    enable = true;
-    initExtra = ''
-      set -o vi
-    '';
-  };
-
-  programs.nixvim = {
-    enable = true;
-
-    colorschemes.catppuccin.enable = true;
-
-    plugins = {
-      airline = {
-        enable = true;
-        settings.symbols = {
-          colnr = " co:";
-          linenr = " ln:";
-        };
-      };
-      web-devicons.enable = false;
-      neo-tree.enable = true;
-      fzf-lua.enable = true;
-      lean.enable = true;
-      copilot-vim.enable = true;
-    };
-
-    opts = {
-      expandtab = true;
-      tabstop = 2;
-      shiftwidth = 2;
-      softtabstop = 2;
-      autoindent = true;
-      number = true;
-      list = true;
-      listchars = "tab:→\\ ,eol:¬,nbsp:·,trail:•,extends:⟩,precedes:⟨";
-      modeline = true;
-      wrap = true;
-      hlsearch = true;
-      incsearch = true;
-      backspace="indent,eol,start";
-    };
-
-    keymaps = [
-      { mode = "n"; key = "<Leader>ff"; action = ":FzfLua files<CR>"; }
-      { key = "<F5>"; action = ":Neotree<CR>"; }
-    ];
   };
 
   programs.i3status = {
