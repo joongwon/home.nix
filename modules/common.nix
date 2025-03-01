@@ -5,6 +5,10 @@
 
   home.packages = with pkgs; [
     tmux
+    typst
+    tinymist
+    texliveFull
+    python312Packages.pygments
   ];
 
   programs.bash = {
@@ -40,7 +44,7 @@
 
       copilot-vim
       vim-nix
-      lean-vim
+      typst-vim
     ];
     extraConfig = ''
       set expandtab
@@ -57,6 +61,14 @@
       set incsearch
       set backspace=indent,eol,start
       set termguicolors
+
+      digraph ll  8467 " ℓ
+      digraph #>  8614 " ↦
+      digraph =v  8659 " ⇓
+      digraph /E  8708 " ∄
+      digraph \-  8866 " ⊢
+      digraph </ 10216 " ⟨
+      digraph /> 10217 " ⟩
 
       nnoremap <Leader>ff :FZF<CR>
 
@@ -79,6 +91,13 @@
           \ 'allowlist': ['rust'],
           \ })
       endif
+      if executable('tinymist')
+        au User lsp_setup call lsp#register_server({
+          \ 'name': 'tinymist',
+          \ 'cmd': {server_info->['tinymist']},
+          \ 'allowlist': ['typst'],
+          \ })
+      endif
       function! s:on_lsp_buffer_enabled() abort
         setlocal signcolumn=yes
         if exists('+tagfunc')
@@ -90,7 +109,7 @@
         nmap <buffer> [d <plug>(lsp-previous-diagnostic)
         nmap <buffer> ]d <plug>(lsp-next-diagnostic)
         nmap <buffer> K <plug>(lsp-hover)
-        nmap <buffer> <leader>ca <plug>(lsp-code-actions)
+        nmap <buffer> <leader>ca <plug>(lsp-code-action)
         nnoremap <buffer> <expr><c-j> lsp#scroll(+4)
         nnoremap <buffer> <expr><c-k> lsp#scroll(-4)
         let g:lsp_format_sync_timeout = 1000
@@ -100,7 +119,6 @@
         autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
       augroup END
       let g:lsp_diagnostics_virtual_text_prefix = " ‣ "
-      let g:lsp_inlay_hints_enabled = 1
     '';
   };
 }
