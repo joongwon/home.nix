@@ -3,15 +3,9 @@
 
   inputs = {
     # Specify the source of Home Manager and Nixpkgs.
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-    home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nixvim = {
-      url = "github:nix-community/nixvim/nixos-24.11";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixpkgs.url = "github:nixos/nixpkgs/master";
+    home-manager.url = "github:nix-community/home-manager/master";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
     vim-healthcheck = {
       url = "github:rhysd/vim-healthcheck";
@@ -19,7 +13,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, nixvim, flake-utils, vim-healthcheck }:
+  outputs = { self, nixpkgs, home-manager, flake-utils, vim-healthcheck }@inputs:
     let
       hostnames = [ "freleefty-macbook" "freleefty-nixos" ];
       usernames = [ "joongwon" ];
@@ -36,7 +30,6 @@
           pkgs = nixpkgs.legacyPackages.${system};
           modules = [
             ./modules/${hostname}.nix
-            nixvim.homeManagerModules.nixvim
             ({ config, pkgs, ... }:
               {
                 nixpkgs.overlays = [
@@ -51,6 +44,7 @@
                 ];
               })
           ];
+          extraSpecialArgs.flake-inputs = inputs;
         }
       );
     });

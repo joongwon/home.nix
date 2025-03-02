@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, flake-inputs, ... }:
 {
   imports = [ ./common.nix ];
 
@@ -15,4 +15,6 @@
       gls --color=always -C $@ | iconv -f utf-8-mac -t utf-8
     }
   '';
+
+  programs.vim.packageConfigurable = pkgs.vim-darwin;
 }
