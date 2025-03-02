@@ -98,6 +98,19 @@
           \ 'allowlist': ['typst'],
           \ })
       endif
+      if executable('ocamllsp')
+        au User lsp_setup call lsp#register_server({
+          \ 'name': 'ocamllsp',
+          \ 'cmd': {server_info->['ocamllsp']},
+          \ 'allowlist': ['ocaml'],
+          \ })
+      endif
+      function! s:enable_fold() abort
+        set foldmethod=expr
+        set foldexpr=lsp#ui#vim#folding#foldexpr()
+        set foldtext=lsp#ui#vim#folding#foldtext()
+      endfunction
+      command! LspEnableFold call s:enable_fold()
       function! s:on_lsp_buffer_enabled() abort
         setlocal signcolumn=yes
         if exists('+tagfunc')
