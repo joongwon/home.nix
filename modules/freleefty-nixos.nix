@@ -15,6 +15,8 @@ in
     pavucontrol
     python3
     zip
+    unzip
+    discord
   ];
 
   home.file = {
@@ -38,7 +40,7 @@ in
   xsession.windowManager.i3 = {
     enable = true;
     config = {
-      focus.followMouse = false;
+      # focus.followMouse = false;
       modifier = "Mod4";
       fonts.size = 10.0;
       keybindings = mkI3Keybindings (mod: {
@@ -54,6 +56,9 @@ in
         "${mod}+Shift+k" = "move up";
         "${mod}+Shift+l" = "move right";
         "${mod}+Shift+v" = "split h";
+
+        "${mod}+0" = "workspace 0";
+        "${mod}+Shift+0" = "move container to workspace 0";
       });
       modes.resize = mkI3Keybindings (mod: {
         "${mod}+h" = "resize shrink width 10 px or 10 ppt";

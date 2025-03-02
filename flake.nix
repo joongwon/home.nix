@@ -13,9 +13,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
+    vim-healthcheck = {
+      url = "github:rhysd/vim-healthcheck";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nixvim, flake-utils }:
+  outputs = { self, nixpkgs, home-manager, nixvim, flake-utils, vim-healthcheck }:
     let
       hostnames = [ "freleefty-macbook" "freleefty-nixos" ];
       usernames = [ "joongwon" ];
@@ -33,6 +37,19 @@
           modules = [
             ./modules/${hostname}.nix
             nixvim.homeManagerModules.nixvim
+            ({ config, pkgs, ... }:
+              {
+                nixpkgs.overlays = [
+                  (self: super: {
+                    vimPlugins = super.vimPlugins // {
+                      vim-healthcheck = pkgs.vimUtils.buildVimPlugin {
+                        name = "vim-healthcheck";
+                        src = vim-healthcheck;
+                      };
+                    };
+                  })
+                ];
+              })
           ];
         }
       );

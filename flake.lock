@@ -306,7 +306,8 @@
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
-        "nixvim": "nixvim"
+        "nixvim": "nixvim",
+        "vim-healthcheck": "vim-healthcheck"
       }
     },
     "systems": {
@@ -357,6 +358,22 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "vim-healthcheck": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1658481635,
+        "narHash": "sha256-nRz5VqbIW5386Ogf/aHEz5TlHb/tO8+aUmQiUVsKTLg=",
+        "owner": "rhysd",
+        "repo": "vim-healthcheck",
+        "rev": "45a95f6c98322410cffdcb4a1c8a9a44a25d18be",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rhysd",
+        "repo": "vim-healthcheck",
         "type": "github"
       }
     }

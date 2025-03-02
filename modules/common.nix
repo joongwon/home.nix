@@ -1,48 +1,7 @@
 { config, pkgs, lib, ... }:
-{
-  nixpkgs.config.allowUnfree = true;
-  programs.home-manager.enable = true;
-
-  home.packages = with pkgs; [
-    tmux
-  ];
-
-  programs.bash = {
-    enable = true;
-    initExtra = ''
-      set -o vi
-    '';
-  };
-
-  programs.zsh = {
-    enable = true;
-    initExtra = ''
-      bindkey -v
-      bindkey -v '^?' backward-delete-char
-
-      export LANG=en_US.UTF-8
-      export PROMPT='%F{120}%n@%m %F{219}$(print -P %~ | iconv -f utf-8-mac -t utf-8) %f%# ';
-      setopt PROMPT_SUBST
-    '';
-  };
-
-  programs.vim = {
-    enable = true;
-    defaultEditor = true;
-    plugins = with pkgs.vimPlugins; [
-      fzf-vim
-      nerdtree
-      catppuccin-vim
-      vim-airline
-      vim-lsp
-      asyncomplete-vim
-      asyncomplete-lsp-vim
-
-      copilot-vim
-      vim-nix
-      lean-vim
-    ];
-    extraConfig = ''
+let
+  vim-config = {
+    common = ''
       set expandtab
       set tabstop=2
       set shiftwidth=2
@@ -71,12 +30,20 @@
       let g:airline_symbols.maxlinenr = '''
       let g:airline_symbols.linenr = 'ln:'
       let g:airline_symbols.colnr = ' co:'
-
+    '';
+    vim = ''
       if executable('rust-analyzer')
         au User lsp_setup call lsp#register_server({
           \ 'name': 'rust-analyzer',
           \ 'cmd': {server_info->['rust-analyzer']},
           \ 'allowlist': ['rust'],
+          \ })
+      endif
+      if executable('ocamllsp')
+        au User lsp_setup call lsp#register_server({
+          \ 'name': 'ocamllsp',
+          \ 'cmd': {server_info->['ocamllsp']},
+          \ 'allowlist': ['ocaml'],
           \ })
       endif
       function! s:on_lsp_buffer_enabled() abort
@@ -102,5 +69,69 @@
       let g:lsp_diagnostics_virtual_text_prefix = " ‣ "
       let g:lsp_inlay_hints_enabled = 1
     '';
+    nvim = ''
+      lua require('lean').setup{ mappings = true }
+    '';
+  };
+in
+{
+  nixpkgs.config.allowUnfree = true;
+  programs.home-manager.enable = true;
+
+  home.packages = with pkgs; [
+    tmux
+  ];
+
+  programs.bash = {
+    enable = true;
+    initExtra = ''
+      set -o vi
+    '';
+  };
+
+  programs.zsh = {
+    enable = true;
+    initExtra = ''
+      bindkey -v
+      bindkey -v '^?' backward-delete-char
+
+      export LANG=en_US.UTF-8
+      export PROMPT='%F{120}%n@%m %F{219}$(print -P %~ | iconv -f utf-8-mac -t utf-8) %f%# ';
+      setopt PROMPT_SUBST
+    '';
+  };
+
+  programs.neovim = {
+    enable = true;
+    plugins = with pkgs.vimPlugins; [
+      fzf-vim
+      nerdtree
+      catppuccin-vim
+      vim-airline
+      copilot-vim
+
+      lean-nvim
+    ];
+    extraConfig = "${vim-config.common}\n${vim-config.nvim}";
+  };
+
+  programs.vim = {
+    enable = true;
+    defaultEditor = true;
+    plugins = with pkgs.vimPlugins; [
+      fzf-vim
+      nerdtree
+      catppuccin-vim
+      vim-airline
+      copilot-vim
+
+      vim-lsp
+      asyncomplete-vim
+      asyncomplete-lsp-vim
+
+      vim-nix
+      vim-healthcheck
+    ];
+    extraConfig = "${vim-config.common}\n${vim-config.vim}";
   };
 }
