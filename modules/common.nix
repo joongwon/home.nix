@@ -62,11 +62,17 @@ let
           \ })
       endif
       function! s:enable_fold() abort
-        set foldmethod=expr
-        set foldexpr=lsp#ui#vim#folding#foldexpr()
-        set foldtext=lsp#ui#vim#folding#foldtext()
+        setlocal foldmethod=expr
+        setlocal foldexpr=lsp#ui#vim#folding#foldexpr()
+        setlocal foldtext=lsp#ui#vim#folding#foldtext()
+      endfunction
+      function! s:disable_fold() abort
+        setlocal foldmethod=manual
+        setlocal foldtext=foldtext()
+        setlocal foldexpr=0
       endfunction
       command! LspEnableFold call s:enable_fold()
+      command! LspDisableFold call s:disable_fold()
       function! s:on_lsp_buffer_enabled() abort
         setlocal signcolumn=yes
         if exists('+tagfunc')
@@ -100,6 +106,7 @@ in
 
   home.packages = with pkgs; [
     tmux
+    texlive.combined.scheme-full
   ];
 
   programs.bash = {

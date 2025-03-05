@@ -8,6 +8,7 @@ in
   home.stateVersion = "24.11";
   home.username = "joongwon";
   home.homeDirectory = "/home/joongwon";
+  nixpkgs.config.permittedInsecurePackages = [ "xpdf-4.05" ];
   home.packages = with pkgs; [
     coq
     imagemagick
@@ -17,12 +18,36 @@ in
     zip
     unzip
     discord
+    xpdf
   ];
 
   home.file = {
     ".uim" = {
       source = ./uim;
       executable = false;
+    };
+    ".xpdfrc" = {
+      executable = false;
+      text =
+        let
+          ghostscriptDir = "${pkgs.ghostscript}/share/ghostscript/fonts";
+        in
+        ''
+          fontFile Times-Roman        ${ghostscriptDir}/n021003l.pfb
+          fontFile Times-Italic       ${ghostscriptDir}/n021023l.pfb
+          fontFile Times-Bold         ${ghostscriptDir}/n021004l.pfb
+          fontFile Times-BoldItalic   ${ghostscriptDir}/n021024l.pfb
+          fontFile Helvetica              ${ghostscriptDir}/n019003l.pfb
+          fontFile Helvetica-Oblique      ${ghostscriptDir}/n019023l.pfb
+          fontFile Helvetica-Bold         ${ghostscriptDir}/n019004l.pfb
+          fontFile Helvetica-BoldOblique  ${ghostscriptDir}/n019024l.pfb
+          fontFile Courier              ${ghostscriptDir}/n022003l.pfb
+          fontFile Courier-Oblique      ${ghostscriptDir}/n022023l.pfb
+          fontFile Courier-Bold         ${ghostscriptDir}/n022004l.pfb
+          fontFile Courier-BoldOblique  ${ghostscriptDir}/n022024l.pfb
+          fontFile Symbol         ${ghostscriptDir}/s050000l.pfb
+          fontFile ZapfDingbats   ${ghostscriptDir}/d050000l.pfb
+        '';
     };
   };
 
@@ -65,6 +90,7 @@ in
         "${mod}+j" = "resize grow height 10 px or 10 ppt";
         "${mod}+k" = "resize shrink height 10 px or 10 ppt";
         "${mod}+l" = "resize grow width 10 px or 10 ppt";
+        "${mod}+r" = "mode \"default\"";
       });
     };
 
